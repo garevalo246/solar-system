@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <!-- <script src = "js/three.min.js"></script>
+    <script src = "js/three.js"></script> -->
+
+    <script>
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        3000
+      );
+      camera.position.set(100, 0, 200);
+
+      var loadingManager = new THREE.LoadingManager();
+
+      loadingManager.onProgress = function (item, loaded, total) {
+        console.log(item, loaded, total);
+      };
+
+      loadingManager.onLoad = function () {
+        console.log("loaded all resources");
+        RESOURCES_LOADED = true;
+      };
+      var textureLoader = new THREE.TextureLoader(loadingManager);
+
+      var renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setClearColor("#000000");
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      document.body.appendChild(renderer.domElement);
+
+      window.addEventListener("resize", () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+
+        camera.updateProjectionMatrix();
+      });
+
+      //*********controls***********
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+      //********************** Sun *************************
+      var sunTexture = textureLoader.load("textures/sunmap.jpg");
+      // sunTexture.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      // sunTexture.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+      // sunTexture.repeat.set(2, 2);
+      var scl = 5;
+
+      var sphereSun = new THREE.SphereGeometry(5, 32, 32);
+      var materialSun = new THREE.MeshPhongMaterial({
+        map: sunTexture,
+        opacity: 0.8,
+        transparent: true,
+      });
+      var sunMesh = new THREE.Mesh(sphereSun, materialSun);
+      sunMesh.position.set(-320, 0, 0);
+      sunMesh.scale.set(15, 15, 15);
+      sunMesh.add(mercuryMesh);
+      scene.add(sunMesh);
+
+      var spriteMaterial = new THREE.SpriteMaterial({
+        map: new THREE.ImageUtils.loadTexture("textures/glow.png"),
+        color: 0xebae34,
+        transparent: false,
+        blending: THREE.AdditiveBlending,
+      });
+      var sprite = new THREE.Sprite(spriteMaterial);
+      sprite.scale.set(20, 20, 20);
+      sunMesh.add(sprite);
+
+      //*********************** Mercury **************************
+      var mercTexture = textureLoader.load("textures/mercurymap.jpg");
+
+      var sphereMerc = new THREE.SphereGeometry(5, 32, 32);
+      var materialMerc = new THREE.MeshPhongMaterial({ map: mercTexture });
+      var mercuryMesh = new THREE.Mesh(sphereMerc, materialMerc);
+      mercuryMesh.position.set(0, 0, 0);
+      mercuryMesh.scale.set(3, 3, 3);
+      sunMesh.add(mercuryMesh);
+      scene.add(mercuryMesh);
+
+      //*********************** Venus *************************
+      var venusTexture = textureLoader.load("textures/venusmapthumb.jpg");
+      venusTexture.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      venusTexture.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+      venusTexture.repeat.set(2, 2);
+
+      var venusBumpMap = textureLoader.load("textures/venusbumpthumb.jpg");
+      venusBumpMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      venusBumpMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+      venusBumpMap.repeat.set(2, 2);
+
+      var sphereVenus = new THREE.SphereGeometry(5, 32, 32);
+      var materialVenus = new THREE.MeshPhongMaterial({
+        map: venusTexture,
+        bumpMap: venusBumpMap,
+      });
+      var venusMesh = new THREE.Mesh(sphereVenus, materialVenus);
+      venusMesh.position.set(150, 0, 0);
+      venusMesh.scale.set(3, 3, 3);
+      scene.add(venusMesh);
+
+      //********************** Earth ************************
+      var earthColorMap = textureLoader.load("textures/earthmap1k.jpg");
+      earthColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      earthColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var earthBumpMap = textureLoader.load("textures/earthbump1k.jpg");
+
+      var sphereEarth = new THREE.SphereGeometry(5, 32, 32);
+      var materialEarth = new THREE.MeshPhongMaterial({
+        map: earthColorMap,
+        bumpMap: earthBumpMap,
+      });
+      materialEarth.bumpScale = 0.05;
+
+      var earthMesh = new THREE.Mesh(sphereEarth, materialEarth);
+      earthMesh.position.set(300, 0, 0);
+      earthMesh.scale.set(scl, scl, scl);
+      scene.add(earthMesh);
+
+      //**************************** Mars *************************
+      var marsColorMap = textureLoader.load("textures/marsmap1k.jpg");
+
+      var marsBumpMap = textureLoader.load("textures/marsbump1k.jpg");
+
+      var sphereMars = new THREE.SphereGeometry(5, 32, 32);
+      var materialMars = new THREE.MeshPhongMaterial({
+        map: marsColorMap,
+        bumpMap: marsBumpMap,
+      });
+      materialMars.bumpScale = 0.05;
+
+      var marsMesh = new THREE.Mesh(sphereMars, materialMars);
+      marsMesh.position.set(450, 0, 0);
+      marsMesh.scale.set(scl, scl, scl);
+      scene.add(marsMesh);
+
+      //**************************** Jupiter ****************************
+      var jupiterColorMap = textureLoader.load("textures/jupitermap.jpg");
+
+      var sphereJupiter = new THREE.SphereGeometry(5, 32, 32);
+      var materialJupiter = new THREE.MeshPhongMaterial({
+        map: jupiterColorMap,
+      });
+
+      var jupiterMesh = new THREE.Mesh(sphereJupiter, materialJupiter);
+      jupiterMesh.position.set(600, 0, 0);
+      jupiterMesh.scale.set(9, 9, 9);
+      scene.add(jupiterMesh);
+
+      //***************************** Saturn ****************************
+      var SaturnColorMap = textureLoader.load("textures/saturnmap.jpg");
+      SaturnColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      SaturnColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var sphereSaturn = new THREE.SphereGeometry(5, 32, 32);
+      sphereSaturn.rotateZ(0.785398);
+      var materialSaturn = new THREE.MeshPhongMaterial({ map: SaturnColorMap });
+
+      var saturnMesh = new THREE.Mesh(sphereSaturn, materialSaturn);
+      saturnMesh.position.set(750, 0, 0);
+      saturnMesh.scale.set(8, 8, 8);
+      scene.add(saturnMesh);
+
+      //saturn rings
+      var ringGeometry = new THREE.RingGeometry(65, 110, 32);
+      ringGeometry.rotateX(1.5708);
+      ringGeometry.rotateZ(0.785398);
+
+      var ringTexture = textureLoader.load("textures/saturnmap.jpg");
+      var ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        map: ringTexture,
+      });
+      var ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+      ringMesh.position.set(750, 0, 0);
+      scene.add(ringMesh);
+
+      //************************ Uranus ****************************
+      var uranusColorMap = textureLoader.load("textures/uranusmap.jpg");
+      uranusColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      uranusColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var sphereUranus = new THREE.SphereGeometry(5, 32, 32);
+      var materialUranus = new THREE.MeshPhongMaterial({ map: uranusColorMap });
+
+      var uranusMesh = new THREE.Mesh(sphereUranus, materialUranus);
+      uranusMesh.position.set(900, 0, 0);
+      uranusMesh.scale.set(scl, scl, scl);
+      scene.add(uranusMesh);
+
+      //************************* Neptune ****************************
+      var neptuneColorMap = textureLoader.load("textures/neptunemap.jpg");
+      neptuneColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      neptuneColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var sphereNeptune = new THREE.SphereGeometry(5, 32, 32);
+      var materialNeptune = new THREE.MeshPhongMaterial({
+        map: neptuneColorMap,
+      });
+
+      var neptuneMesh = new THREE.Mesh(sphereNeptune, materialNeptune);
+      neptuneMesh.position.set(1050, 0, 0);
+      neptuneMesh.scale.set(scl, scl, scl);
+      scene.add(neptuneMesh);
+
+      //************************* Pluto ****************************
+      var plutoColorMap = textureLoader.load("textures/plutomap1k.jpg");
+      plutoColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      plutoColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var plutoBumpMap = textureLoader.load("textures/plutobump1k.jpg");
+      plutoBumpMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      plutoBumpMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var spherePluto = new THREE.SphereGeometry(5, 32, 32);
+      var materialPluto = new THREE.MeshPhongMaterial({
+        map: plutoColorMap,
+        bumpMap: plutoBumpMap,
+      });
+
+      var plutoMesh = new THREE.Mesh(spherePluto, materialPluto);
+      plutoMesh.position.set(1200, 0, 0);
+      plutoMesh.scale.set(2, 2, 2);
+      scene.add(plutoMesh);
+
+      //**************** STARS ************
+      // var starGeometry  = new THREE.SphereGeometry(100, 1000, 1000);
+
+      // var starFieldMap = textureLoader.load("textures/galaxy_starfield.png");
+      // starFieldMap.wrapS = THREE.RepeatWrapping;
+      // starFieldMap.wrapT = THREE.RepeatWrapping;
+      // venusTexture.repeat.set(0.2, 0.2);
+
+      // var starMaterial  = new THREE.MeshBasicMaterial({map: starFieldMap, side: THREE.BackSide});
+
+      // var starMesh  = new THREE.Mesh(starGeometry, starMaterial);
+      // scene.add(starMesh);
+
+      //************* LIGHTING *****************
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+      //top light - Crimson
+      // var light2 = new THREE.PointLight(0xFFFFFF,5, 1000);
+      // light2.position.set(-320, 330, 0);
+      // scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-640, 0, 0);
+      scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-100, 0, 0);
+      scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-320, -320, 0);
+      scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-320, 0, 320);
+      scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-320, 0, -320);
+      scene.add(light2);
+
+      var light2 = new THREE.PointLight(0xffffff, 2, 1000);
+      light2.position.set(-320, 320, 0);
+      scene.add(light2);
+
+      var render = function () {
+        requestAnimationFrame(render);
+
+        controls.update();
+        update();
+        renderer.render(scene, camera);
+      };
+      var update = function () {
+        sunMesh.rotation.y += 0.001;
+        mercuryMesh.rotation.y += 0.001;
+        venusMesh.rotation.y += 0.001;
+        earthMesh.rotation.y += 0.001;
+        marsMesh.rotation.y += 0.001;
+        jupiterMesh.rotation.y += 0.001;
+        saturnMesh.rotation.y += 0.001;
+        //object.rotation.setEulerFromQuaternion( quaternion );
+        uranusMesh.rotation.y += 0.001;
+        neptuneMesh.rotation.y += 0.001;
+        plutoMesh.rotation.y += 0.001;
+      };
+      render();
+    </script>
+  </body>
+</html>
