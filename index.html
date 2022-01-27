@@ -56,9 +56,9 @@
       const mouse = new THREE.Vector2();
 
       //********************** Sun *************************
-      const sunTexture = textureLoader.load("textures/sunTexture.jpeg");
+      const sunTexture = textureLoader.load("textures/2k_sun.jpg");
   
-      const scl = 5;
+      
 
       const sunGeo = new THREE.SphereGeometry(14, 30, 30);
       const sunMat = new THREE.MeshBasicMaterial({
@@ -82,43 +82,48 @@
       //*********************** Mercury **************************
       const mercTexture = textureLoader.load("textures/mercurymap.jpg");
 
-      const mercuryGeo = new THREE.SphereGeometry(2, 30, 30);
+      const mercuryGeo = new THREE.SphereGeometry(10, 30, 30);
       const mercuryMat = new THREE.MeshStandardMaterial({ map: mercTexture });
       const mercury = new THREE.Mesh(mercuryGeo, mercuryMat);
-      mercury.position.set(20, 0, 0);
-      mercury.scale.set(1, 1, 1);
-      // scene.add(mercury);
-      sun.add(mercury);
+      mercury.position.set(300, 0, 0);
+      mercury.scale.set(2, 2, 2);
+      
+
+      const mercuryObj = new THREE.Object3D();
+      mercuryObj.position.set(0, 0, 0);
+      mercuryObj.add(mercury)
+      scene.add(mercuryObj)
+
 
 
       const mercuryRing = new THREE.RingGeometry( 15, 15.1, 100 );
-      const mercuryRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+      const mercuryRingMaterial = new THREE.MeshBasicMaterial( { 
+        color: 0xffffff, 
+        side: THREE.DoubleSide
+      
+      } );
       const mercuryGuide = new THREE.Mesh( mercuryRing, mercuryRingMaterial );
-      mercuryGuide.scale.set(20,20,20)
+      mercuryGuide.scale.set(20,20,20)      
       mercuryRing.rotateX(1.5708);
       scene.add( mercuryGuide );
 
       //*********************** Venus *************************
-      const venusTexture = textureLoader.load("textures/venusmapthumb.jpg");
-      venusTexture.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
-      venusTexture.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
-      venusTexture.repeat.set(2, 2);
-
-      const venusBumpMap = textureLoader.load("textures/venusbumpthumb.jpg");
-      venusBumpMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
-      venusBumpMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
-      venusBumpMap.repeat.set(2, 2);
-
-      const sphereVenus = new THREE.SphereGeometry(3, 30, 30);
+      const venusTexture = textureLoader.load("textures/8k_venus_surface.jpg");
+    
+      const sphereVenus = new THREE.SphereGeometry(10, 30, 30);
       const materialVenus = new THREE.MeshStandardMaterial({
         map: venusTexture,
-        bumpMap: venusBumpMap,
       });
       const venusMesh = new THREE.Mesh(sphereVenus, materialVenus);
-      venusMesh.position.set(-27, 0, 0);
-      venusMesh.scale.set(1, 1, 1);
-      // scene.add(venusMesh);
+      venusMesh.position.set(400, 0, 0);
+      venusMesh.scale.set(2, 2, 2);
+      
+      venusMesh.rotateX(THREE.Math.degToRad(177.3))
       sun.add(venusMesh);
+
+      const venusObj = new THREE.Object3D();
+      venusObj.add(venusMesh)
+      scene.add(venusObj)
 
       const venusRing = new THREE.RingGeometry( 20, 20.1, 100 );
       const venusRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -134,7 +139,7 @@
 
       const earthBumpMap = textureLoader.load("textures/earthbump1k.jpg");
 
-      const sphereEarth = new THREE.SphereGeometry(3, 32, 32);
+      const sphereEarth = new THREE.SphereGeometry(10, 32, 32);
       const materialEarth = new THREE.MeshStandardMaterial({
         map: earthColorMap,
         bumpMap: earthBumpMap,
@@ -142,9 +147,14 @@
       materialEarth.bumpScale = 0.05;
 
       const earthMesh = new THREE.Mesh(sphereEarth, materialEarth);
-      earthMesh.position.set(-400, 0, 0);
-      earthMesh.scale.set(scl, scl, scl);
+      earthMesh.position.set(500, 0, 0);
+      earthMesh.scale.set(2, 2, 2);
+      earthMesh.rotateY(THREE.Math.degToRad(23.4))
       scene.add(earthMesh);
+
+      const earthObj = new THREE.Object3D();
+      earthObj.add(earthMesh)
+      scene.add(earthObj)
 
       const earthRing = new THREE.RingGeometry( 25, 25.1, 100 );
       const earthRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -158,7 +168,7 @@
 
       const marsBumpMap = textureLoader.load("textures/marsbump1k.jpg");
 
-      const sphereMars = new THREE.SphereGeometry(5, 32, 32);
+      const sphereMars = new THREE.SphereGeometry(15, 32, 32);
       const materialMars = new THREE.MeshStandardMaterial({
         map: marsColorMap,
         bumpMap: marsBumpMap,
@@ -166,9 +176,13 @@
       materialMars.bumpScale = 0.05;
 
       const mars = new THREE.Mesh(sphereMars, materialMars);
-      mars.position.set(-455, 0, 210);
-      mars.scale.set(scl, scl, scl);
+      mars.position.set(600, 0, 0);
+      mars.scale.set(2, 2, 2);
       scene.add(mars);
+
+      const marsObj = new THREE.Object3D();
+      marsObj.add(mars)
+      scene.add(marsObj)
 
       const marsRing = new THREE.RingGeometry( 30, 30.1, 100 );
       const marsRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -180,15 +194,19 @@
       //**************************** Jupiter ****************************
       const jupiterMap = textureLoader.load("textures/jupitermap.jpg");
 
-      const jupiterGeo = new THREE.SphereGeometry(5, 32, 32);
+      const jupiterGeo = new THREE.SphereGeometry(25, 32, 32);
       const jupiterMat = new THREE.MeshStandardMaterial({
         map: jupiterMap,
       });
 
       const jupiter = new THREE.Mesh(jupiterGeo, jupiterMat);
-      jupiter.position.set(0, 0, -600);
-      jupiter.scale.set(9, 9, 9);
+      jupiter.position.set(700, 0, 0);
+      jupiter.scale.set(2, 2, 2);
       scene.add(jupiter);
+
+      const jupiterObj = new THREE.Object3D();
+      jupiterObj.add(jupiter)
+      scene.add(jupiterObj)
 
       const jupiterRing = new THREE.RingGeometry( 35, 35.1, 100 );
       const jupiterRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -198,33 +216,36 @@
       scene.add( jupiterGuide );
 
       //***************************** Saturn ****************************
-      var SaturnColorMap = textureLoader.load("textures/saturnmap.jpg");
-      // SaturnColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
-      // SaturnColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
-
-      var sphereSaturn = new THREE.SphereGeometry(5, 32, 32);
-      // sphereSaturn.rotateZ(0.785398);
-      var materialSaturn = new THREE.MeshStandardMaterial({ map: SaturnColorMap });
-
-      var saturnMesh = new THREE.Mesh(sphereSaturn, materialSaturn);
-      saturnMesh.rotateX(THREE.Math.degToRad(-27))
-      saturnMesh.position.set(0, 0, 700);
-      saturnMesh.scale.set(8, 8, 8);
-      saturnMesh.add(ringMesh)
-      scene.add(saturnMesh);
-
       //saturn rings
-      const ringGeometry = new THREE.RingGeometry(50, 100, 32);
+      const ringGeometry = new THREE.RingGeometry(80, 130, 32);
       const ringTexture = textureLoader.load("textures/RingSaturn3.png");
-      var ringMaterial = new THREE.MeshBasicMaterial({
+      const ringMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
         map: ringTexture,
       });
-      var ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
-      ringMesh.rotateX(THREE.Math.degToRad(-117))
-      ringMesh.position.set(0, 0, 700);
-      scene.add(ringMesh);
+      const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+      ringMesh.rotateX(THREE.Math.degToRad(117))
+      ringMesh.position.set(800, 0, 0);
+      
+
+      var SaturnColorMap = textureLoader.load("textures/saturnmap.jpg");
+      // SaturnColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
+      // SaturnColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
+
+      var sphereSaturn = new THREE.SphereGeometry(25, 32, 32);
+      // sphereSaturn.rotateZ(0.785398);
+      var materialSaturn = new THREE.MeshStandardMaterial({ map: SaturnColorMap });
+
+      var saturnMesh = new THREE.Mesh(sphereSaturn, materialSaturn);
+      saturnMesh.rotateX(THREE.Math.degToRad(26.7))
+      saturnMesh.position.set(800, 0, 0);
+      saturnMesh.scale.set(2, 2, 2);
+
+
+      const saturnObj = new THREE.Object3D();
+      saturnObj.add(saturnMesh, ringMesh)
+      scene.add(saturnObj)
 
       const saturnRing = new THREE.RingGeometry( 40, 40.1, 100 );
       const saturnRingMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -238,13 +259,18 @@
       uranusColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
       uranusColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
 
-      const sphereUranus = new THREE.SphereGeometry(5, 32, 32);
+      const sphereUranus = new THREE.SphereGeometry(15, 32, 32);
       const materialUranus = new THREE.MeshStandardMaterial({ map: uranusColorMap });
 
       const uranusMesh = new THREE.Mesh(sphereUranus, materialUranus);
-      uranusMesh.position.set(800, 0, 0);
-      uranusMesh.scale.set(scl, scl, scl);
+      uranusMesh.rotateX(THREE.Math.degToRad(97))
+      uranusMesh.position.set(900, 0, 0);
+      uranusMesh.scale.set(2, 2, 2);
       scene.add(uranusMesh);
+
+      const uranusObj = new THREE.Object3D();
+      uranusObj.add(uranusMesh)
+      scene.add(uranusObj)
 
       const uranusRing = new THREE.RingGeometry( 45, 45.1, 100 );
       const uranusMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -258,15 +284,19 @@
       neptuneColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
       neptuneColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
 
-      const sphereNeptune = new THREE.SphereGeometry(5, 32, 32);
+      const sphereNeptune = new THREE.SphereGeometry(15, 32, 32);
       const materialNeptune = new THREE.MeshStandardMaterial({
         map: neptuneColorMap,
       });
 
       const neptuneMesh = new THREE.Mesh(sphereNeptune, materialNeptune);
-      neptuneMesh.position.set(800, 0, -400);
-      neptuneMesh.scale.set(scl, scl, scl);
+      neptuneMesh.position.set(1000, 0, 0);
+      neptuneMesh.scale.set(2, 2, 2);
       scene.add(neptuneMesh);
+
+      const neptuneObj = new THREE.Object3D();
+      neptuneObj.add(neptuneMesh)
+      scene.add(neptuneObj)
 
       const neptuneRing = new THREE.RingGeometry( 50, 50.1, 100 );
       const neptuneMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
@@ -275,36 +305,8 @@
       neptuneRing.rotateX(1.5708);
       scene.add( neptuneGuide );
 
-      //************************* Pluto ****************************
-      const plutoColorMap = textureLoader.load("textures/plutomap1k.jpg");
-      plutoColorMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
-      plutoColorMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
-
-      const plutoBumpMap = textureLoader.load("textures/plutobump1k.jpg");
-      plutoBumpMap.wrapS = THREE.RepeatWrapping; // set to tile/repeat horizontally
-      plutoBumpMap.wrapT = THREE.RepeatWrapping; // set to tile/repeat vertically
-
-      const spherePluto = new THREE.SphereGeometry(5, 32, 32);
-      const materialPluto = new THREE.MeshStandardMaterial({
-        map: plutoColorMap,
-        bumpMap: plutoBumpMap,
-      });
-
-      const plutoMesh = new THREE.Mesh(spherePluto, materialPluto);
-      plutoMesh.position.set(1000, 0, 0);
-      plutoMesh.scale.set(2, 2, 2);
-      scene.add(plutoMesh);
-
-      const plutoRing = new THREE.RingGeometry( 55, 55.1, 100 );
-      const plutoMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
-      const plutoGuide = new THREE.Mesh( plutoRing, plutoMaterial );
-      plutoGuide.scale.set(20,20,20)
-      plutoRing.rotateX(1.5708);
-      scene.add( plutoGuide );
-
-       //**************** rings for solar system ************
-    
       
+
 
       //**************** STARS ************
       // var cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -332,7 +334,7 @@
 
       //************* LIGHTING *****************
 
-      const ambient = new THREE.AmbientLight(0x333333, 1.5);
+      const ambient = new THREE.AmbientLight(0x333333, 1);
       scene.add(ambient);      
 
       const sunLight = new THREE.PointLight(0xffffff, 2, 1000);
@@ -349,17 +351,24 @@
       };
       const update = function () {
         sun.rotation.y += 0.004;
-        mercury.rotation.y += 0.004;
-        venusMesh.rotation.y += 0.002;
-        earthMesh.rotation.y += 0.02;
-        mars.rotation.y += 0.018;
-        jupiter.rotation.y += 0.04;
+        mercury.rotation.y += 0.003;
+        // venusMesh.rotation.y -= 0.02;
+        earthMesh.rotation.y += 0.002;
+        mars.rotation.y += 0.008;
+        jupiter.rotation.y += 0.004;
         saturnMesh.rotation.y += 0.038;
         //object.rotation.setEulerFromQuaternion( quaternion );
-        uranusMesh.rotation.y += 0.03;
+        uranusMesh.rotation.y -= 0.03;
         neptuneMesh.rotation.y += 0.032;
-        plutoMesh.rotation.y += 0.008;
 
+        mercuryObj.rotation.y += 0.003;
+        // venusObj.rotation.y += 0.0025;
+        earthObj.rotation.y+=0.001;
+        marsObj.rotation.y +=0.004;
+        jupiterObj.rotation.y += 0.002;
+        // saturnObj.rotation.y += 0.003;
+        uranusObj.rotation.y += 0.0003;
+        neptuneObj.rotation.y += 0.0015;
 
         // mercury.obj.rotateY(0.04)
       };
